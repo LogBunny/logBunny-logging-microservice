@@ -8,6 +8,7 @@ const LogData = z.object({
   spanId: z.string().min(1),
   commit: z.string().min(1),
   appId: z.string().min(1),
+  streamId: z.string().min(1),
   metaData: z.object({
     parentResourceId: z.string().min(1),
   }),

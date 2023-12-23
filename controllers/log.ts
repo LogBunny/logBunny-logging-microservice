@@ -63,8 +63,11 @@ class Logs {
         filter.timestamp = {
           $lte: new Date(req.query.to_timestamp.toString()),
         };
+      } else if (req.query.appId) {
+        filter.appId = req.query.appId;
+      } else if (req.query.streamId) {
+        filter.streamId = req.query.streamId;
       }
-      filter.appId = req.query.appId;
 
       const logs = await Log.find(filter);
       res.status(200).json({ data: logs });
@@ -109,7 +112,12 @@ class Logs {
         if (req.query.parent_resource_id) {
           filter["metadata.parentResourceId"] = req.query.parent_resource_id;
         }
-        filter.appId = req.query.appId;
+        if (req.query.appId) {
+          filter.appId = req.query.appId;
+        }
+        if (req.query.streamId) {
+          filter.streamId = req.query.streamId;
+        }
 
         const matchesFilter = Object.entries(filter).every(([key, value]) => {
           if (key === "message" && value.$regex) {

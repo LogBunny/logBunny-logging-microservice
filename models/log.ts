@@ -9,6 +9,7 @@ const LogSchema: Schema = new Schema({
   spanId: String,
   commit: String,
   appId: String,
+  streamId: String,
   metaData: {
     parentResourceId: String,
   },
