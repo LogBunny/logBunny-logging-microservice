@@ -2,17 +2,10 @@ import { Schema } from "mongoose";
 
 const LogSchema: Schema = new Schema({
   level: String,
-  message: String,
-  resourceId: String,
+  data: Object,
   timestamp: Date,
-  traceId: String,
-  spanId: String,
-  commit: String,
   appId: String,
   streamId: String,
-  metaData: {
-    parentResourceId: String,
-  },
 });
 
 export default LogSchema;

@@ -14,6 +14,7 @@ class Logs {
         .status(400)
         .json({ error: "failed to parse request body:", log: error });
     }
+    console.log(validatedData);
     LogsQueue.add("log", validatedData);
     RedisClient.publish("log", JSON.stringify(validatedData));
     return res.status(201).json({ status: "added" });
@@ -26,25 +27,10 @@ class Logs {
       if (req.query.level) {
         filter.level = req.query.level;
       }
-      if (req.query.msg_regex) {
-        filter.message = {
-          $regex: new RegExp(req.query.msg_regex.toString(), "i"),
-        };
-      }
-      if (req.query.resource_id) {
-        filter.resourceId = req.query.resource_id;
-      }
-      if (req.query.trace_id) {
-        filter.traceId = req.query.trace_id;
-      }
-      if (req.query.span_id) {
-        filter.spanId = req.query.span_id;
-      }
-      if (req.query.commit) {
-        filter.commit = req.query.commit;
-      }
-      if (req.query.parent_resource_id) {
-        filter["metadata.parentResourceId"] = req.query.parent_resource_id;
+      if (req.query.data) {
+        if (typeof req.query.data === "string") {
+          filter["data"] = JSON.parse(req.query.data);
+        }
       }
       if (req.query.timestamp) {
         filter.timestamp = new Date(req.query.timestamp.toString());
@@ -63,9 +49,11 @@ class Logs {
         filter.timestamp = {
           $lte: new Date(req.query.to_timestamp.toString()),
         };
-      } else if (req.query.appId) {
+      }
+      if (req.query.appId) {
         filter.appId = req.query.appId;
-      } else if (req.query.streamId) {
+      }
+      if (req.query.streamId) {
         filter.streamId = req.query.streamId;
       }
 
@@ -92,25 +80,10 @@ class Logs {
         if (req.query.level) {
           filter.level = req.query.level;
         }
-        if (req.query.msg_regex) {
-          filter.message = {
-            $regex: new RegExp(req.query.msg_regex.toString(), "i"),
-          };
-        }
-        if (req.query.resource_id) {
-          filter.resourceId = req.query.resource_id;
-        }
-        if (req.query.trace_id) {
-          filter.traceId = req.query.trace_id;
-        }
-        if (req.query.span_id) {
-          filter.spanId = req.query.span_id;
-        }
-        if (req.query.commit) {
-          filter.commit = req.query.commit;
-        }
-        if (req.query.parent_resource_id) {
-          filter["metadata.parentResourceId"] = req.query.parent_resource_id;
+        if (req.query.data) {
+          if (typeof req.query.data === "string") {
+            filter["metadata.parentResourceId"] = JSON.parse(req.query.data);
+          }
         }
         if (req.query.appId) {
           filter.appId = req.query.appId;
