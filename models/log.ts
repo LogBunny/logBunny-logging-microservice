@@ -8,4 +8,8 @@ const LogSchema: Schema = new Schema({
   streamId: String,
 });
 
+LogSchema.set("toJSON", {
+  virtuals: true,
+});
+
 export default LogSchema;
