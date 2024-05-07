@@ -30,6 +30,7 @@ app.use(express.json());
 app.post("/ingest", Logs.CreateNewLog);
 app.get("/stream", Logs.StreamLogs); //Keep Alive connection!
 app.get("/logs", Logs.GetLogs);
+app.get("/metrics", Logs.Metrics);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

@@ -65,6 +65,55 @@ class Logs {
     }
   }
 
+  public static async Metrics(req: Request, res: Response) {
+    let response = {};
+    const filter: Record<string, any> = {};
+    if (req.query.from_timestamp && req.query.to_timestamp) {
+      filter.timestamp = {
+        $gte: new Date(req.query.from_timestamp.toString()),
+        $lte: new Date(req.query.to_timestamp.toString()),
+      };
+    } else if (req.query.from_timestamp) {
+      filter.timestamp = {
+        $gte: new Date(req.query.from_timestamp.toString()),
+      };
+    } else if (req.query.to_timestamp) {
+      filter.timestamp = {
+        $lte: new Date(req.query.to_timestamp.toString()),
+      };
+    }
+    if (req.query.appId) {
+      filter.appId = req.query.appId;
+    }
+    if (req.query.streamId) {
+      filter.streamId = req.query.streamId;
+    }
+
+    filter["level"] = "info";
+    let info = await Log.countDocuments(filter);
+    filter["level"] = "debug";
+    let debug = await Log.countDocuments(filter);
+    filter["level"] = "error";
+    let error = await Log.countDocuments(filter);
+
+    const error_logs = await Log.find(filter);
+    filter["level"] = "debug";
+    const debug_logs = await Log.find(filter);
+    filter["level"] = "info";
+    const info_logs = await Log.find(filter);
+
+    res.status(200).json({
+      data: {
+        info: info,
+        debug: debug,
+        error: error,
+        info_logs: info_logs,
+        debug_logs: debug_logs,
+        error_logs: error_logs,
+      },
+    });
+  }
+
   public static StreamLogs(req: Request, res: Response) {
     const headers = {
       "Content-Type": "text/event-stream",
