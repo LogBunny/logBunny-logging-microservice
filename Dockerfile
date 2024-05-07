@@ -17,7 +17,7 @@ WORKDIR /app/
 
 COPY --from=builder /usr/src/dist/ /app/
 COPY package.json /app/
-COPY .env /app/
+#COPY .env /app/
 
 RUN yarn install --production
 CMD ["node", "index.js"]
